@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aoeai.mybatismysqltest.mapper.WorkerNodeMapper">
+
+	<resultMap id="workerNodeMap" type="com.aoeai.mybatismysqltest.entity.WorkerNode">
+        <id column="ID" property="id" />
+        <id column="HOST_NAME" property="hostName" />
+        <id column="PORT" property="port" />
+        <id column="TYPE" property="type" />
+        <id column="LAUNCH_DATE" property="launchDate" />
+        <id column="MODIFIED" property="modified" />
+        <id column="CREATED" property="created" />
+    </resultMap>
+
+    <!-- 插入数据 -->
+    <insert id="save" parameterType="com.aoeai.mybatismysqltest.entity.WorkerNode"
+            useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="_long" keyProperty="id" order="AFTER">
+            select @@IDENTITY as id
+        </selectKey>
+        INSERT INTO WORKER_NODE
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="hostName != null">
+                HOST_NAME,
+            </if>
+            <if test="port != null">
+                PORT,
+            </if>
+            <if test="type != null">
+                TYPE,
+            </if>
+            <if test="launchDate != null">
+                LAUNCH_DATE,
+            </if>
+            <if test="modified != null">
+                MODIFIED,
+            </if>
+            <if test="created != null">
+                CREATED,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="hostName != null">
+                #{hostName},
+            </if>
+            <if test="port != null">
+                #{port},
+            </if>
+            <if test="type != null">
+                #{type},
+            </if>
+            <if test="launchDate != null">
+                #{launchDate},
+            </if>
+            <if test="modified != null">
+                #{modified},
+            </if>
+            <if test="created != null">
+                #{created},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 更新数据 -->
+    <update id="update" parameterType="com.aoeai.mybatismysqltest.entity.WorkerNode">
+        UPDATE WORKER_NODE
+        <set>
+            <if test="hostName != null">
+                HOST_NAME = #{hostName},
+            </if>
+            <if test="port != null">
+                PORT = #{port},
+            </if>
+            <if test="type != null">
+                TYPE = #{type},
+            </if>
+            <if test="launchDate != null">
+                LAUNCH_DATE = #{launchDate},
+            </if>
+            <if test="modified != null">
+                MODIFIED = #{modified},
+            </if>
+            <if test="created != null">
+                CREATED = #{created},
+            </if>
+        </set>
+        WHERE ID = #{id}
+    </update>
+
+    <sql id="Base_Column_List">
+            ID,
+            HOST_NAME,
+            PORT,
+            TYPE,
+            LAUNCH_DATE,
+            MODIFIED,
+            CREATED
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="com.aoeai.mybatismysqltest.entity.WorkerNode" resultMap="workerNodeMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM WORKER_NODE
+        WHERE ID = #{id}
+    </select>
+
+    <!-- 搜索条件 -->
+    <sql id="selectWhere">
+        <where>
+            <if test="id != null">
+                AND ID = #{id},
+            </if>
+            <if test="hostName != null">
+                AND HOST_NAME = #{hostName},
+            </if>
+            <if test="port != null">
+                AND PORT = #{port},
+            </if>
+            <if test="type != null">
+                AND TYPE = #{type},
+            </if>
+            <if test="launchDate != null">
+                AND LAUNCH_DATE = #{launchDate},
+            </if>
+            <if test="modified != null">
+                AND MODIFIED = #{modified},
+            </if>
+            <if test="created != null">
+                AND CREATED = #{created},
+            </if>
+        </where>
+        <if test="pageable != null">
+            LIMIT #{offset},#{pageSize}
+        </if>
+    </sql>
+
+    <select id="selectCount" parameterType="java.util.Map" resultType="java.lang.Long">
+        SELECT COUNT(1)
+        FROM WORKER_NODE
+        <include refid="selectWhere" />
+    </select>
+
+    <select id="selectList" parameterType="java.util.Map" resultMap="workerNodeMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM WORKER_NODE
+        <include refid="selectWhere" />
+    </select>
+
+
+</mapper>
