@@ -12,11 +12,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -61,6 +60,10 @@ public class WorkerNodeControllerTest extends AbstractTestNGSpringContextTests {
                 .andExpect(jsonPath("$.type").value(type));
     }
 
+    /**
+     * 更新测试-正常
+     * @throws Exception
+     */
     @Test
     public void updateTest() throws Exception {
         String id = "1";
@@ -83,6 +86,52 @@ public class WorkerNodeControllerTest extends AbstractTestNGSpringContextTests {
                 .andExpect(jsonPath("$.type").value(type));
     }
 
+    /**
+     * 更新测试-不传主键时返回异常
+     * @throws Exception
+     */
+    @Test
+    public void updateTest1() throws Exception {
+        String port = "26";
+        String hostName = "主机6";
+        String type = "16";
+
+        mockMvc.perform(patch(URL + "/workerNode")
+                .param("port", port)
+                .param("hostName", hostName)
+                .param("type", type))
+                .andDo(print())
+                .andExpect(status().is(BAD_REQUEST.value()));
+    }
+
+    /**
+     * 正常数据测试
+     * @throws Exception
+     */
+    @Test
+    public void selectByPrimaryKeyTest() throws Exception {
+        String id = "1";
+
+        // http://localhost:8080/workerNode/1
+        mockMvc.perform(get(URL + "/workerNode/" + id))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    /**
+     * 不存在数据测试
+     * @throws Exception
+     */
+    @Test
+    public void selectByPrimaryKeyTest1() throws Exception {
+        String id = "-1";
+
+        // http://localhost:8080/workerNode/1
+        mockMvc.perform(get(URL + "/workerNode/" + id))
+                .andDo(print())
+                .andExpect(status().is(NOT_FOUND.value()));
+    }
+
     @Test
     public void recordsTest() throws Exception {
         String pageSize = "10";
@@ -94,6 +143,5 @@ public class WorkerNodeControllerTest extends AbstractTestNGSpringContextTests {
                 .param("pageNum", pageNum))
                 .andDo(print())
                 .andExpect(status().isOk());
-
     }
 }
